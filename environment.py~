@@ -54,7 +54,7 @@ class Environment:
 				x_max = (ol4-y_int)/slope
 				x_max = min( x_max, max( p2[0], p1[0] ) )
 
-			points = [(max(ol1,min( p2[0],p1[0])),y_min),(min(ol3,max( p2[0],p1[0])),y_max),(x_min,max(ol2,min( p2[1],p1[1]))),(x_max,min(ol4,max( p2[1],p1[1])))]
+			points = [(max(ol1,min( p2[0],p1[0])),y_min),(min(ol1,max( p2[0],p1[0])),y_max),(x_min,max(ol1,min( p2[1],p1[1]))),(x_max,min(ol1,max( p2[1],p1[1])))]
 
 			print points
 
