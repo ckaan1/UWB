@@ -12,8 +12,8 @@ from sensor_simulation import *
 if __name__ == "__main__":
 
 	env = Environment(1)
-	print env.boundaries
-	print env.obstacles
+	print "Boundaries\n", env.boundaries
+	print "Obstacles\n", env.obstacles
 
 	p1 = (0.5,0.5)
 	p2 = (3.5,7.5)
