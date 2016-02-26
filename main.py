@@ -17,8 +17,8 @@ if __name__ == "__main__":
 
 	p1 = (0.5,0.5)
 	p2 = (3.5,7.5)
-	print p1,p2
-	collisions = env.determine_collision(p1,p2)
+	collisions = env.determine_NLOS(p1,p2)
+
 	print collisions
 
 	raw_input("Press enter to exit...")
