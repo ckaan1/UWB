@@ -33,6 +33,11 @@ def fakeLocations(xSize=5,ySize=5,stepSize = .05):
 def heatmap(locations, pLocations,xSize,ySize):
     errorMap = np.zeros((xSize,ySize))
     locDifferences = []
+    xyz = zip(*locations)
+    xmin = map(min,xyz)[0]
+    ymin = map(min,xyz)[1]
+    xmax = map(max,xyz)[0]
+    ymax = map(max,xyz)[1]
     for l in range(len(locations)):
         locDifferences.append([pLocations[l][0]-locations[l][0],
                                pLocations[l][1]-locations[l][1], pLocations[l][2]-locations[l][2]])
@@ -44,16 +49,19 @@ def heatmap(locations, pLocations,xSize,ySize):
             errorMap[x,y] = errMagnitude
             i += 1
     
-    ax = subplot(111)
-    im = imshow(errorMap, cmap=cm.RdBu, vmax=abs(errorMap).max(), vmin=0)
+    
+
+
+    im = imshow(errorMap, cmap=cm.RdBu, vmax=abs(errorMap).max(), vmin=0,
+                extent = [xmin,xmax,ymin,ymax])
     #im.set_interpolation('nearest')
     #im.set_interpolation('bicubic')
     im.set_interpolation('bilinear')
+    im.colorbar()
     #ax.set_image_extent(-3, 3, -3, 3)
 
     show()
     return errorMap
-
 
 
 
