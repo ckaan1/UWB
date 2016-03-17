@@ -13,8 +13,9 @@ class Environment:
 
 	## Determine if there is a NLOS condition between to radios
 	def determine_NLOS( self, p1, p2 ):
-		collisions = []
+		collisions = {}
 		for o in self.obstacles:
+			collisions[o] = []
 			# Determine obstacle bounds
 			# x = x_min
 			ol1 = self.obstacles[o][0]
@@ -26,7 +27,7 @@ class Environment:
 			ol4 = self.obstacles[o][3]
 
 			# Determine the min and maximum intersections for both x and y
-			# 3 different configurations for p1 and p2: Horizontal, Vertical, and Tilted
+			# 3 different configurations for p1 and p2: Horizontal, Vertical, and Sloped
 			# Need to make sure that the intersection exists between p1 and p2
 			# If an intersection doesn't actually exist between p1 and p2, the 
 			# intersection will be either p1 or p2
@@ -43,32 +44,31 @@ class Environment:
 				y_max = max( p1[1],p2[1] )
 				x_min = p2[0]
 				x_max = p2[0]
-			# Tilted line
+			# SLoped line
 			else:
 				# Slope and y-intersect for the line
 				slope = (p2[1]-p1[1])/(p2[0]-p1[0])
 				y_int = p2[1] - slope*p2[0]
 
 				y_min = slope*ol1 + y_int
-				y_min = max( y_min, min( p2[1], p1[1] ) )
 				y_max = slope*ol3 + y_int
-				y_max = min( y_max, max( p2[1], p1[1] ) )
 
 				x_min = (ol2-y_int)/slope
-				x_min = max( x_min, min( p2[0], p1[0] ) )
 				x_max = (ol4-y_int)/slope
-				x_max = min( x_max, max( p2[0], p1[0] ) )
 
 			# Determine the points of collision with the obstacle
 			# If no collision with obstacle the point will be either p1 or p2
-			points = [(max(ol1,min( p2[0],p1[0])),y_min),(min(ol3,max( p2[0],p1[0])),y_max),(x_min,max(ol2,min( p2[1],p1[1]))),(x_max,min(ol4,max( p2[1],p1[1])))]
+			points = [(x_min,ol2),(ol1,y_min),(x_max,ol4),(ol3,y_max)]
 
 			# Check if the points determined are in the obstacle
 			for p in points:
+				if ((p[0] > max(p1[0],p2[0])) and (p[1] > max(p1[1],p2[1]))):
+					p = ( max(p1[0],p2[0]),max(p1[1],p2[1]) )
+				if ((p[0] < min(p1[0],p2[0])) and (p[1] < min(p1[1],p2[1]))):
+					p = ( min(p1[0],p2[0]),min(p1[1],p2[1]) )
 				# If they are, p1 and p2 are in NLOS, so add the obstacle that blocked it to the list
 				if( (p[0]>=ol1 and p[0]<=ol3) and (p[1]>=ol2 and p[1]<=ol4) ):
-					collisions.append(o)
-					break
+					collisions[o].append((p[0],p[1]))
 		
 		# Return list of obstacles that blocked p1 and p2
 		return collisions

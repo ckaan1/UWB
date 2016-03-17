@@ -15,10 +15,20 @@ if __name__ == "__main__":
 	print "Boundaries\n", env.boundaries
 	print "Obstacles\n", env.obstacles
 
-	p1 = (0.5,0.5)
-	p2 = (3.5,7.5)
-	collisions = env.determine_NLOS(p1,p2)
+	anchors = []
+	anchors.append(AnchorNode(0,0,0,0.1))
+	anchors.append(AnchorNode(5,0,0,0.1))
+	anchors.append(AnchorNode(0,8,0,0.1))
+	anchors.append(AnchorNode(5,8,0,0.1))
 
-	print collisions
+	beacon = BeaconNode(0.5,0.5,0)
+
+	bp = beacon.getPos()
+	print 'Beacon pos: ', bp
+	for a in anchors:
+		ap = a.getPos()
+		print 'Anchor pos: ', ap
+		collision = env.determine_NLOS([ap['x'],ap['y']],[bp['x'],bp['y']])
+		print collision
 
 	raw_input("Press enter to exit...")
