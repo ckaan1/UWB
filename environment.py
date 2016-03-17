@@ -7,9 +7,10 @@
 ##
 ####################################################################
 class Environment:
-	def __init__(self,environment_number):
+	def __init__(self,environment_number,dielectric_constant):
 		self.boundaries = {'x':[0, 5],'y':[0, 8]}
 		self.obstacles = get_obstacles( environment_number )
+		self.dielectric = dielectric_constant
 
 	## Determine if there is a NLOS condition between to radios
 	def determine_NLOS( self, p1, p2 ):
@@ -73,6 +74,22 @@ class Environment:
 		# Return list of obstacles that blocked p1 and p2
 		return collisions
 
+	def in_obstacle(self,pos):
+		for o in self.obstacles:
+			# x = x_min
+			ol1 = self.obstacles[o][0]
+			# y = y_min
+			ol2 = self.obstacles[o][1]
+			# x = x_max
+			ol3 = self.obstacles[o][2]
+			# y = y_max
+			ol4 = self.obstacles[o][3]
+
+			if( (pos[0]>=ol1 and pos[0]<=ol3) and (pos[1]>=ol2 and pos[1]<=ol4) ):
+				return True
+			else:
+				return False
+
 
 
 ## Assume rectangular obstacles that are aligned with x and y axis for now
@@ -90,3 +107,5 @@ def get_obstacles( environment_number ):
 	else:
 		obstacles = {}
 		return obstacles
+
+

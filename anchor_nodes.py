@@ -3,5 +3,5 @@ class AnchorNode:
 		self.pos = {'x':x,'y':y,'z':z}
 		self.v = variance
 
-	def getPos(self):
+	def get_pos(self):
 		return self.pos
