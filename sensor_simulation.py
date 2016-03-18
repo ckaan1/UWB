@@ -1,4 +1,4 @@
-from numpy import *
+import numpy as np
 
 def true_time(ap,bp,obstacles,dc,c):
 	min_x = min(ap['x'],bp['x'])
@@ -22,4 +22,4 @@ def get_distance(a,bp,obstacles,dc):
 
 	total_time = true_time(a.get_pos(),bp,obstacles,dc,c)
 
-	return (c*total_time + random.normal(0,a.v))
+	return (c*total_time + np.random.normal(0,a.v))
