@@ -4,32 +4,28 @@
 ## Solver includes Non-linear Least Squares
 ## 
 ####################################################################
-class position_solver:
-    
-import environment
-import datetime
-import numpy as np
-import scipy.optimize as optimize
-import matplotlib.pylab as plt
-
-## Read fixed anchor position
-
-## Non-Linear Least Squares for LOS
-    def func_1(x, p_FA, d_M) 
-        return (d_M - np.linalg.norm(x-p_FA))^2
+class Position_solver:
+    # x_guess is the initial guess / p_FA is teh position array of fixed anchors
+    # d_m is the distance vector from mobile target to fixed anchors
+    def __init__(self,x_guess,p_FA,d_M):
+       
+		self.NLLS = NLLS_opt(x_guess,p_FA,d_M)
+		
+  
+    # NLLS function
+def func_1(x,p_FA,d_M) :
+    import numpy as np
+    num = len(p_FA)  # num - number of fixed anchors
+    cost = cost = [0.]*num
+    for i in range(0,num):
+        cost[i] = np.linalg.norm(d_M[i,0:2]) - np.linalg.norm(x-p_FA[i,0:2])
+    return cost   
         
-    def residuals(x,p_FA,d_M,PLP):
-        return PLP - func_1(x, p_FA, d_M) 
+    # NLLS optimization    
+def NLLS_opt(x_guess,p_FA,d_M):   
+    import numpy as np
+    import scipy.optimize as optimize
         
-    def NLLS()    # NLLS test
-        N=1000
-        kd_guess= [3.5, 3.5]  # a position guess for mobile tag
-        #p_FA
-        #d_M
-        PLP = func_1(x, p_FA, d_M)+(np.random.random(N)-0.5)*0.1
+    x = optimize.leastsq(func_1,x_guess,args=(p_FA,d_M))
 
-        x,cov,infodict,mesg,ier = optimize.leastsq(
-        residuals,kd_guess,args=(p_FA,d_M,PLP),full_output=True,warning=True)
-
-        print(x)
-        return x
+    return x[0]

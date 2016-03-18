@@ -7,6 +7,7 @@ from experiments import *
 from localization_algorithms import *
 from nlos_detection import *
 from sensor_simulation import *
+from position_solver import *
 
 import numpy as np
 import matplotlib.pyplot as plt
@@ -91,5 +92,14 @@ if __name__ == "__main__":
 	plt.colorbar()
 	plt.show()
 
+	## Test position solver using Non-Linear Least Square algorithm
+	## Assume there are three fixed anchors
+	x_guess = numpy.array([3, 3])  # a position guess for mobile tag
+	p_FA = numpy.array([[0,0],[5,0],[2,5]])
+	d_M = numpy.array([[2,2],[-3,2],[0,-3]])
+	ps = Position_solver(x_guess,p_FA,d_M)
+	x_estimate = ps.NLLS
+	print "Estimate position of test1 using NLLS algorithm\n",x_estimate
+	
 	raw_input("Press enter to exit...")
 
