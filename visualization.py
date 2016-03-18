@@ -6,6 +6,7 @@ Created on Thu Mar 17 14:48:45 2016
 """
 from __future__ import division
 from pylab import *
+import matplotlib.pyplot as plt
 import numpy as np
 
 #tool for generating sample exact position data, and estimated position data, with errors
@@ -30,7 +31,7 @@ def fakeLocations(xSize=5,ySize=5,stepSize = .05):
 #takes in absolute and pseudo positions over a map, plots a heatmap of error at each location
 #expects positions coming in to iterate over y first, then x, for a full grid
 #returns nothing
-def heatmap(locations, pLocations,xSize,ySize):
+def heatmap(locations, pLocations,xSize,ySize,xl,yl):
     errorMap = np.zeros((xSize,ySize))
     locDifferences = []
     xyz = zip(*locations)
@@ -48,19 +49,22 @@ def heatmap(locations, pLocations,xSize,ySize):
             errMagnitude = sqrt((locDifferences[i][0])**2 + (locDifferences[i][1])**2)
             errorMap[x,y] = errMagnitude
             i += 1
-    
-    
+    print errorMap
 
-
-    im = imshow(errorMap, cmap=cm.RdBu, vmax=abs(errorMap).max(), vmin=0,
-                extent = [xmin,xmax,ymin,ymax])
+    y, x = np.meshgrid(xl,yl)    
+    
+    plt.pcolor(x,y,errorMap,cmap='RdBu',vmin=0,vmax=errorMap.max())
+    plt.axis([0,5,0,8])
+    
+    # plt.imshow(errorMap, cmap=cm.RdBu, vmax=abs(errorMap).max(), vmin=0,
+    #            extent = [xmin,xmax,ymin,ymax],interpolation='bilinear')
     #im.set_interpolation('nearest')
     #im.set_interpolation('bicubic')
-    im.set_interpolation('bilinear')
-    im.colorbar()
+    #im.set_interpolation('bilinear')
+    plt.colorbar()
     #ax.set_image_extent(-3, 3, -3, 3)
 
-    show()
+    plt.show()
     return errorMap
 
 
