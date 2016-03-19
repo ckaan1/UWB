@@ -49,6 +49,7 @@ def heatmap(locations, pLocations,xSize,ySize,xl,yl):
             errMagnitude = sqrt((locDifferences[i][0])**2 + (locDifferences[i][1])**2)
             errorMap[x,y] = errMagnitude
             i += 1
+    print errorMap
 
     y, x = np.meshgrid(xl,yl)    
     
