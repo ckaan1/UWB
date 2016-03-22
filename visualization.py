@@ -50,10 +50,13 @@ def heatmap(locations, pLocations,xSize,ySize,xl,yl):
             errorMap[x,y] = errMagnitude
             i += 1
 
-    y, x = np.meshgrid(xl,yl)    
+    y, x = np.meshgrid(yl,xl)    
     
     plt.pcolor(x,y,errorMap,cmap='RdBu',vmin=0,vmax=errorMap.max())
     plt.axis([0,5,0,8])
+    plt.xlabel("X position (m)")
+    plt.ylabel("Y position (m)")
+    plt.title("Position Error (m)")
     
     # plt.imshow(errorMap, cmap=cm.RdBu, vmax=abs(errorMap).max(), vmin=0,
     #            extent = [xmin,xmax,ymin,ymax],interpolation='bilinear')
