@@ -98,8 +98,8 @@ if __name__ == "__main__":
 	## Test position solver using Non-Linear Least Square algorithm
 	## Assume there are three fixed anchors
 	x_guess = np.array([3, 3])  # a position guess for mobile tag
-	p_FA = np.array([[0,0],[5,0],[2,5]])
-	d_M = np.array([[2,2],[-3,2],[0,-3]])
+	p_FA = np.array([[0,0],[5,0],[2,5]]) # positions of 3 fixed anchors
+	d_M = np.array([2.8,3.5,3]) # measured distances
 	ps = Position_solver(x_guess,p_FA,d_M)
 	x_estimate = ps.NLLS
 	print "Estimate position of test1 using NLLS algorithm\n",x_estimate
