@@ -8,6 +8,7 @@ from localization_algorithms import *
 from nlos_detection import *
 from sensor_simulation import *
 from position_solver import *
+from visualization import *
 
 import numpy as np
 import matplotlib.pyplot as plt
@@ -23,10 +24,10 @@ if __name__ == "__main__":
 	# Setup Anchor locations
 	anchors = []
 	anchors.append(AnchorNode(0,0,0,0.05))
-	anchors.append(AnchorNode(5,0,0,0.05))
+	#anchors.append(AnchorNode(5,0,0,0.05))
 	anchors.append(AnchorNode(0,8,0,0.05))
 	anchors.append(AnchorNode(5,8,0,0.05))
-	anchors.append(AnchorNode(2.5,4,0,0.05))
+	#anchors.append(AnchorNode(2.5,4,0,0.05))
 
 	# Initialize beacon with starting location
 	beacon = BeaconNode(0.5,0.5,0)
@@ -44,58 +45,52 @@ if __name__ == "__main__":
 	# Setup array to hold all combinations of positions
 	beacon_positions = np.zeros((length**2,3))
 	for i in range(len(beacon_positions)):
-		pos = [beacon_positions_x[i-length*(i/length)],beacon_positions_y[i/length],0]
-		# Make sure the point created isn't inside an obstacle
-		# if env.in_obstacle(pos):
-		# 	continue
-		# else:
+		pos = [beacon_positions_x[(i/length)],beacon_positions_y[i-length*(i/length)],0]
 		beacon_positions[i] = pos
-	# From all positions, any that were inside obstacles need to be pruned
-	# actual_positions = beacon_positions[~np.all(beacon_positions==0,axis=1)]
 
-	error = []
-	test_error = {}
-	# For each actual position run the algorithm to obtain an estimated position
+	distances = []
+	# For each beacon position run the algorithm to obtain an estimated position
 	for b_pos in beacon_positions:
-		# move beacon between tests
-		distances = []
+		distance = []
+		# If the point is in an obstacle, return zeros
 		if env.in_obstacle(b_pos):
-			#print 'Obstacle pos: ', b_pos
-			test_error[str((b_pos[0],b_pos[1]))] = 0
-
+			for a in anchors:
+				distance.append(0)
 		else:
 			beacon.move_pos(b_pos[0],b_pos[1],b_pos[2])
 			bp = beacon.get_pos()
-			#print 'Beacon pos: ', bp
 			for a in anchors:
 				ap = a.get_pos()
 				collision = env.determine_NLOS([ap['x'],ap['y']],[bp['x'],bp['y']])
-				#print collision
 
-				distances.append(get_distance(a,bp,collision,env.dielectric))
-			test_error[str((b_pos[0],b_pos[1]))] = abs( distances[4]-(((b_pos[0]-anchors[4].get_pos()['x'])**2+(b_pos[1]-anchors[4].get_pos()['y'])**2)**0.5) )
+				distance.append(get_distance(a,bp,collision,env.dielectric))
+		distances.append(distance)
 
-		#error.append( abs( distances[3]-(((b_pos[0]-ap['x'])**2+(b_pos[1]-ap['y'])**2)**0.5) ) )
-		#print 'Distance Measurements for each anchor: ', distances
-		
+	# errorMap = np.zeros((length,length))
+	# i = 0
+	# for x in range(length):
+	# 	for y in range(length):
+	# 		ap = anchors[3].get_pos()
+	# 		if distances[i][0]==0:
+	# 			errorMap[x,y] = 0
+	# 		else:
+	# 			errorMap[x,y] = abs( distances[i][3] - ((beacon_positions[i,0]-ap['x'])**2 + (beacon_positions[i,1]-ap['y'])**2)**0.5 )
+	# 		i += 1
 
-	y, x = np.meshgrid(beacon_positions_y,beacon_positions_x)
+	# y, x = np.meshgrid(beacon_positions_y,beacon_positions_x)    
+    
+	# plt.pcolor(x,y,errorMap,cmap='RdBu',vmin=0,vmax=errorMap.max())
+	# plt.axis([0,5,0,8])
+	# plt.xlabel("X position (m)")
+	# plt.ylabel("Y position (m)")
+	# plt.title("Position Error (m)")
+	# plt.colorbar()
 
-	aerror = np.zeros((length,length))
+	# plt.show()
 
-	for i in range(length):
-		for j in range(length):
-			aerror[j,i] = test_error[str((beacon_positions_x[j],beacon_positions_y[i]))]
-	print aerror
-	
-	plt.pcolor(x, y, aerror, cmap='RdBu', vmin=0, vmax=aerror.max())
-	plt.title('pcolor')
-	# set the limits of the plot to the limits of the data
-	plt.axis([0,5,0,8])
-	plt.colorbar()
-	plt.show()
 
 	## Test position solver using Non-Linear Least Square algorithm
+<<<<<<< HEAD
 	## Assume there are three fixed anchors
 	x_guess = np.array([3, 3])  # a position guess for mobile tag
 	p_FA = np.array([[0,0],[5,0],[2,5]]) # positions of 3 fixed anchors
@@ -103,6 +98,31 @@ if __name__ == "__main__":
 	ps = Position_solver(x_guess,p_FA,d_M)
 	x_estimate = ps.NLLS
 	print "Estimate position of test1 using NLLS algorithm\n",x_estimate
+=======
+	estimated_pos = np.zeros((len(beacon_positions),3))
+	for i in range(len(distances)):
+	# Use middle of room for guess
+		x_guess = np.array([2.5,4])
+		#x_guess = beacon_positions[i,0:1]
+		#print 'Actual position: ', beacon_positions[i]
+
+		a_pos = np.zeros((len(anchors),2))
+		for j in range(len(anchors)):
+			pos = anchors[j].get_pos()
+			a_pos[j] = [pos['x'],pos['y']]
+
+		d = distances[i]
+		a_d = np.array(d)
+
+		if sum(d)==0:
+			estimated_pos[i] = beacon_positions[i]
+		else:
+			ps = Position_solver(x_guess,a_pos,a_d)
+			p_estimate = ps.NLLS
+			estimated_pos[i] = [p_estimate[0],p_estimate[1],0]
+
+	heatmap(list(beacon_positions),list(estimated_pos),length,length,beacon_positions_x,beacon_positions_y)
+>>>>>>> 7d8d6855b77a4fe2508b671b5b34df31ea2a4747
 	
 	raw_input("Press enter to exit...")
 
