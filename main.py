@@ -90,16 +90,22 @@ if __name__ == "__main__":
 
 
 	## Test position solver using Non-Linear Least Square algorithm
-<<<<<<< HEAD
+
 	## Assume there are three fixed anchors
 	x_guess = np.array([3, 3])  # a position guess for mobile tag
 	p_FA = np.array([[0,0],[5,0],[2,5]]) # positions of 3 fixed anchors
 	d_M = np.array([2.8,3.5,3]) # measured distances
 	ps = Position_solver(x_guess,p_FA,d_M)
 	x_estimate = ps.NLLS
-	print "Estimate position of test1 using NLLS algorithm\n",x_estimate
-=======
+	## Weighted Least Square Algorithm
+	print "Estimate position of test1 using WLS algorithm\n",x_estimate
+
+	## Maximum Likelihood Algorithm
+	x_estimateML = ps.ML
+	print "Estimate position of test1 using ML algorithm\n",x_estimateML 
+	
 	estimated_pos = np.zeros((len(beacon_positions),3))
+ 
 	for i in range(len(distances)):
 	# Use middle of room for guess
 		x_guess = np.array([2.5,4])
@@ -122,7 +128,6 @@ if __name__ == "__main__":
 			estimated_pos[i] = [p_estimate[0],p_estimate[1],0]
 
 	heatmap(list(beacon_positions),list(estimated_pos),length,length,beacon_positions_x,beacon_positions_y)
->>>>>>> 7d8d6855b77a4fe2508b671b5b34df31ea2a4747
 	
 	raw_input("Press enter to exit...")
 
