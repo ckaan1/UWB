@@ -106,28 +106,5 @@ if __name__ == "__main__":
 	
 	estimated_pos = np.zeros((len(beacon_positions),3))
  
-	for i in range(len(distances)):
-	# Use middle of room for guess
-		x_guess = np.array([2.5,4])
-		#x_guess = beacon_positions[i,0:1]
-		#print 'Actual position: ', beacon_positions[i]
 
-		a_pos = np.zeros((len(anchors),2))
-		for j in range(len(anchors)):
-			pos = anchors[j].get_pos()
-			a_pos[j] = [pos['x'],pos['y']]
-
-		d = distances[i]
-		a_d = np.array(d)
-
-		if sum(d)==0:
-			estimated_pos[i] = beacon_positions[i]
-		else:
-			ps = Position_solver(x_guess,a_pos,a_d)
-			p_estimate = ps.NLLS
-			estimated_pos[i] = [p_estimate[0],p_estimate[1],0]
-
-	heatmap(list(beacon_positions),list(estimated_pos),length,length,beacon_positions_x,beacon_positions_y)
-	
-	raw_input("Press enter to exit...")
 
