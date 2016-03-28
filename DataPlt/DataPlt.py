@@ -1,6 +1,7 @@
 # -*- coding: utf-8 -*-
 """
 Created on Mon Mar 28 16:31:23 2016
+Histogram of Test Data in Outdoor and LOS Scenario
 
 @author: Qizong
 """
