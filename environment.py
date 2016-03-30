@@ -7,10 +7,9 @@
 ##
 ####################################################################
 class Environment:
-	def __init__(self,environment_number,dielectric_constant):
+	def __init__(self,environment_number):
 		self.boundaries = {'x':[0, 5],'y':[0, 8]}
 		self.obstacles = get_obstacles( environment_number )
-		self.dielectric = dielectric_constant
 
 	## Determine if there is a NLOS condition between to radios
 	def determine_NLOS( self, p1, p2 ):
@@ -22,13 +21,13 @@ class Environment:
 			else:
 				# Determine obstacle bounds
 				# x = x_min
-				ol1 = self.obstacles[o][0]
+				ol1 = self.obstacles[o]['x'][0]
 				# y = y_min
-				ol2 = self.obstacles[o][1]
+				ol2 = self.obstacles[o]['y'][0]
 				# x = x_max
-				ol3 = self.obstacles[o][2]
+				ol3 = self.obstacles[o]['x'][1]
 				# y = y_max
-				ol4 = self.obstacles[o][3]
+				ol4 = self.obstacles[o]['y'][1]
 
 				# Determine the min and maximum intersections for both x and y
 				# 3 different configurations for p1 and p2: Horizontal, Vertical, and Sloped
@@ -79,6 +78,8 @@ class Environment:
 					# Check if updated intersection points are in an obstacle
 					if( (p[0]>=(ol1-0.001) and p[0]<=(ol3+0.001)) and (p[1]>=(ol2-0.001) and p[1]<=(ol4+0.001)) ):
 						collisions[o].append((p[0],p[1]))
+				if( collisions[o] ):
+					collisions[o].append(self.obstacles[o]['dc'])
 		
 		# Return list of obstacles that blocked p1 and p2
 		return collisions
@@ -86,13 +87,13 @@ class Environment:
 	def in_obstacle(self,pos):
 		for o in self.obstacles:
 			# x = x_min
-			ol1 = self.obstacles[o][0]
+			ol1 = self.obstacles[o]['x'][0]
 			# y = y_min
-			ol2 = self.obstacles[o][1]
+			ol2 = self.obstacles[o]['y'][0]
 			# x = x_max
-			ol3 = self.obstacles[o][2]
+			ol3 = self.obstacles[o]['x'][1]
 			# y = y_max
-			ol4 = self.obstacles[o][3]
+			ol4 = self.obstacles[o]['y'][1]
 
 			if( (pos[0]>=ol1 and pos[0]<=ol3) and (pos[1]>=ol2 and pos[1]<=ol4) ):
 				return True
@@ -101,7 +102,10 @@ class Environment:
 
 
 ## Assume rectangular obstacles that are aligned with x and y axis for now
-#  An obstacle is defined as [min_x, min_y, max_x, max_y]
+#  An obstacle is defined as 
+#  x: [x_min, x_max]
+#  y: [y_min, y_max]
+#  dc: dielectric constant of the material
 #  An environment_number of 0 or a number that is not defined will return no obstacles
 def get_obstacles( environment_number ):
 	if environment_number==0:
@@ -109,8 +113,8 @@ def get_obstacles( environment_number ):
 		return obstacles		
 	elif environment_number==1:
 		obstacles = {}
-		obstacles[0] = [1, 1, 2, 3]
-		obstacles[1] = [1.5, 6.0, 4.5, 7.0]
+		obstacles[0] = {'x':[1, 2],'y':[1, 3],'dc':1.55}
+		obstacles[1] = {'x':[1.5, 4.5],'y':[6.0, 7.0],'dc':1.2}
 		return obstacles
 	else:
 		obstacles = {}

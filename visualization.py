@@ -52,7 +52,7 @@ def heatmap(locations, pLocations,xSize,ySize,xl,yl):
 
     y, x = np.meshgrid(yl,xl)    
     
-    plt.pcolor(x,y,errorMap,cmap='RdBu',vmin=0,vmax=errorMap.max())
+    plt.pcolor(x,y,errorMap,cmap='RdBu',vmin=0,vmax=1)
     plt.axis([0,5,0,8])
     plt.xlabel("X position (m)")
     plt.ylabel("Y position (m)")

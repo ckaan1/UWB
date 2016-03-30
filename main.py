@@ -16,18 +16,17 @@ import matplotlib.pyplot as plt
 if __name__ == "__main__":
 
 	# Setup Environment and display boundaries and obstacles
-	dielectric_constant = 1.55
-	env = Environment(1,dielectric_constant)
+	env = Environment(1)
 	print "Boundaries\n", env.boundaries
 	print "Obstacles\n", env.obstacles
 
 	# Setup Anchor locations
 	anchors = []
 	anchors.append(AnchorNode(0,0,0,0.05))
-	#anchors.append(AnchorNode(5,0,0,0.05))
+	anchors.append(AnchorNode(5,0,0,0.05))
 	anchors.append(AnchorNode(0,8,0,0.05))
 	anchors.append(AnchorNode(5,8,0,0.05))
-	#anchors.append(AnchorNode(2.5,4,0,0.05))
+	anchors.append(AnchorNode(2.5,4,0,0.05))
 
 	# Initialize beacon with starting location
 	beacon = BeaconNode(0.5,0.5,0)
@@ -63,33 +62,33 @@ if __name__ == "__main__":
 				ap = a.get_pos()
 				collision = env.determine_NLOS([ap['x'],ap['y']],[bp['x'],bp['y']])
 
-				distance.append(get_distance(a,bp,collision,env.dielectric))
+				distance.append(get_distance(a,bp,collision))
 		distances.append(distance)
 
 	# errorMap = np.zeros((length,length))
 	# i = 0
 	# for x in range(length):
 	# 	for y in range(length):
-	# 		ap = anchors[3].get_pos()
-	# 		if distances[i][0]==0:
+	# 		ap = anchors[4].get_pos()
+	# 		if distances[i][4]==0:
 	# 			errorMap[x,y] = 0
 	# 		else:
-	# 			errorMap[x,y] = abs( distances[i][3] - ((beacon_positions[i,0]-ap['x'])**2 + (beacon_positions[i,1]-ap['y'])**2)**0.5 )
+	# 			errorMap[x,y] = abs( distances[i][4] - ((beacon_positions[i,0]-ap['x'])**2 + (beacon_positions[i,1]-ap['y'])**2)**0.5 )
 	# 		i += 1
 
 	# y, x = np.meshgrid(beacon_positions_y,beacon_positions_x)    
     
-	# plt.pcolor(x,y,errorMap,cmap='RdBu',vmin=0,vmax=errorMap.max())
+	# plt.pcolor(x,y,errorMap,cmap='RdBu',vmin=0,vmax=1)
 	# plt.axis([0,5,0,8])
 	# plt.xlabel("X position (m)")
 	# plt.ylabel("Y position (m)")
-	# plt.title("Position Error (m)")
+	# plt.title("Distance Error (m)")
 	# plt.colorbar()
 
 	# plt.show()
 
 
-	## Test position solver using Non-Linear Least Square algorithm
+	# Test position solver using Non-Linear Least Square algorithm
 	estimated_pos = np.zeros((len(beacon_positions),3))
 	for i in range(len(distances)):
 	# Use middle of room for guess
