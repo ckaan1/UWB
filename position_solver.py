@@ -7,28 +7,6 @@
 import numpy as np
 import scipy.optimize as optimize
 import math
-
-
-
-class Position_solver:
-    # x_guess is the initial guess / p_FA is teh position array of fixed anchors
-    # d_m is the distance vector from mobile target to fixed anchors
-    def __init__(self):
-       
-		self.NLLS = 0
-		self.ML = 0
-
-    def NLLS_opt(self,x_guess,p_FA,d_M):   
-        
-        x = optimize.leastsq(func_1,x_guess,args=(p_FA,d_M))
-        self.NLLS = x[0]
-        return self.NLLS
-
-    def ML_opt(self,x_guess,p_FA,d_M):
-    
-        res = optimize.minimize(func_2,x_guess,args=(p_FA,d_M))
-        self.ML = res.x
-        return self.ML 
   
 # NLLS function
 def func_1(x,p_FA,d_M) :
@@ -39,14 +17,17 @@ def func_1(x,p_FA,d_M) :
 
         cost[i] = d_M[i] - np.linalg.norm(x-p_FA[i,0:2])
 
-        #cost[i] = np.linalg.norm(d_M[i]) - np.linalg.norm(x-p_FA[i,0:2])
     return cost   
-        
-    # NLLS optimization    
 
-   
+# NLLS optimization  
+def NLLS_opt(x_guess,p_FA,d_M):   
+    
+    x = optimize.leastsq(func_1,x_guess,args=(p_FA,d_M))
+
+    return x[0]
+        
 # Maximum Likelihood
-## Return Matrix J
+# Return Matrix J
 def func_2(x,p_FA,d_M):
 
     num = len(d_M)
@@ -60,6 +41,13 @@ def func_2(x,p_FA,d_M):
     
     J = np.dot(np.dot(J_d.T,np.linalg.inv(Q)),J_d)
     return J[0]
+
+# ML optimization  
+def ML_opt(x_guess,p_FA,d_M):
+
+    res = optimize.minimize(func_2,x_guess,args=(p_FA,d_M))
+
+    return res.x 
     
     
     

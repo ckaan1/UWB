@@ -25,8 +25,8 @@ if __name__ == "__main__":
 	anchors.append(AnchorNode(0,0,0,0.025))
 	anchors.append(AnchorNode(5,0,0,0.025))
 	anchors.append(AnchorNode(0,8,0,0.025))
-	#anchors.append(AnchorNode(5,8,0,0.025))
-	#anchors.append(AnchorNode(2.5,4,0,0.025))
+	anchors.append(AnchorNode(5,8,0,0.025))
+	anchors.append(AnchorNode(2.5,4,0,0.025))
 
 	# Initialize beacon with starting location
 	beacon = BeaconNode(0.5,0.5,0)
@@ -65,55 +65,54 @@ if __name__ == "__main__":
 				distance.append(get_distance(a,bp,collision))
 		distances.append(distance)
 
-	# errorMap = np.zeros((length,length))
-	# i = 0
-	# for x in range(length):
-	# 	for y in range(length):
-	# 		ap = anchors[4].get_pos()
-	# 		if distances[i][4]==0:
-	# 			errorMap[x,y] = 0
-	# 		else:
-	# 			errorMap[x,y] = abs( distances[i][4] - ((beacon_positions[i,0]-ap['x'])**2 + (beacon_positions[i,1]-ap['y'])**2)**0.5 )
-	# 		i += 1
+	errorMap = np.zeros((length,length))
+	i = 0
+	for x in range(length):
+		for y in range(length):
+			ap = anchors[3].get_pos()
+			if distances[i][3]==0:
+				errorMap[x,y] = 0
+			else:
+				errorMap[x,y] = abs( distances[i][3] - ((beacon_positions[i,0]-ap['x'])**2 + (beacon_positions[i,1]-ap['y'])**2)**0.5 )
+			i += 1
 
-	# y, x = np.meshgrid(beacon_positions_y,beacon_positions_x)    
+	y, x = np.meshgrid(beacon_positions_y,beacon_positions_x)    
     
-	# plt.pcolor(x,y,errorMap,cmap='RdBu',vmin=0,vmax=1)
-	# plt.axis([0,5,0,8])
-	# plt.xlabel("X position (m)")
-	# plt.ylabel("Y position (m)")
-	# plt.title("Distance Error (m)")
-	# plt.colorbar()
+	plt.pcolor(x,y,errorMap,cmap='RdBu',vmin=0,vmax=1)
+	plt.axis([0,5,0,8])
+	plt.xlabel("X position (m)")
+	plt.ylabel("Y position (m)")
+	plt.title("Distance Error (m)")
+	plt.colorbar()
 
-	# plt.show()
+	plt.show()
 
-	# Test position solver using Non-Linear Least Square algorithm
-	estimated_pos = np.zeros((len(beacon_positions),3))
-	for i in range(len(distances)):
-	# Use middle of room for guess
-		x_guess = np.array([2.5,4])
-		#x_guess = beacon_positions[i,0:1]
-		#print 'Actual position: ', beacon_positions[i]
+	# # Use position solver on the estimated distances
+	# estimated_pos = np.zeros((len(beacon_positions),3))
+	# # Use middle of room for guess
+	# x_guess = np.array([2.5,4])
 
-		a_pos = np.zeros((len(anchors),2))
-		for j in range(len(anchors)):
-			pos = anchors[j].get_pos()
-			a_pos[j] = [pos['x'],pos['y']]
+	# for i in range(len(distances)):
 
-		d = distances[i]
-		a_d = np.array(d)
+	# 	a_pos = np.zeros((len(anchors),2))
+	# 	for j in range(len(anchors)):
+	# 		pos = anchors[j].get_pos()
+	# 		a_pos[j] = [pos['x'],pos['y']]
 
-		if sum(d)==0:
-			estimated_pos[i] = beacon_positions[i]
-		else:
-			ps = Position_solver()
-			## NLLS solver
-			# p_estimate = ps.NLLS_opt(x_guess,a_pos,a_d)
-			## ML solver
-			p_estimate = ps.ML_opt(x_guess,a_pos,a_d)
-			estimated_pos[i] = [p_estimate[0],p_estimate[1],0]
+	# 	d = distances[i]
+	# 	a_d = np.array(d)
 
-	heatmap(beacon_positions,estimated_pos,length,length,beacon_positions_x,beacon_positions_y)
+	# 	if sum(d)==0:
+	# 		estimated_pos[i] = beacon_positions[i]
+	# 	else:
+	# 		## Use a solver to provide estimated position
+	# 		## NLLS solver
+	# 		p_estimate = NLLS_opt(x_guess,a_pos,a_d)
+	# 		## ML solver
+	# 		# p_estimate = ML_opt(x_guess,a_pos,a_d)
+	# 		estimated_pos[i] = [p_estimate[0],p_estimate[1],0]
+
+	# heatmap(beacon_positions,estimated_pos,length,length,beacon_positions_x,beacon_positions_y)
 
 	raw_input("Press enter to exit...")
  
