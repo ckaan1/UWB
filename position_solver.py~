@@ -51,6 +51,7 @@ def func_2(x,p_FA,d_M):
     return J
     
 def ML_opt(x_guess,p_FA,d_M):
+    import numpy as np
     import scipy.optimize as optimize
     
     x = optimize.minimize(func_2,x_guess,args=(p_FA,d_M))
