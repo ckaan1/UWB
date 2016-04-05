@@ -13,70 +13,70 @@ data_import = pd.read_csv('data.csv', sep=',',header=None)
 data_1 = data_import[0:2615][1]
 # the histogram of the data_1 (distance = 2 m)
 plt.figure()
-data_1.hist(bins=100)
-
+weights = np.ones_like(data_1)/float(len(data_1))
+plt.hist(data_1, 50, weights=weights, facecolor='green', alpha=0.5)
 
 plt.xlabel('Distance (m)')
-plt.ylabel('Distribution')
-plt.title('Histogram of UWB Test Data (Outdoor, LOS, distance = 2 m)')
+plt.ylabel('PDF')
+plt.title('Histogram of UWB Test Data (Outdoor, LOS, distance = 2 m)\n Sample number = 2615')
 
-plt.axis([1.8, 2.4, 0, 500])
+plt.axis([1.8, 2.4, 0, 0.2])
 plt.grid(True)
 plt.show()
 
 data_2 = data_import[2636:5224][1]
 # the histogram of the data_1 (distance = 4 m)
 plt.figure()
-data_2.hist(bins=100)
-
+weights = np.ones_like(data_2)/float(len(data_2))
+plt.hist(data_2, 50, weights=weights, facecolor='green', alpha=0.5)
 
 plt.xlabel('Distance (m)')
-plt.ylabel('Distribution')
-plt.title('Histogram of UWB Test Data (Outdoor, LOS, distance = 4 m)')
+plt.ylabel('PDF')
+plt.title('Histogram of UWB Test Data (Outdoor, LOS, distance = 4 m)\n Sample number = 2609')
 
-plt.axis([3.9, 4.4, 0, 400])
+plt.axis([3.9, 4.4, 0, 0.14])
 plt.grid(True)
 plt.show()
 
 data_3 = data_import[5484:8923][1]
 # the histogram of the data_1 (distance = 8 m)
 plt.figure()
-data_3.hist(bins=100)
-
+weights = np.ones_like(data_3)/float(len(data_3))
+plt.hist(data_3, 50, weights=weights, facecolor='green', alpha=0.5)
 
 plt.xlabel('Distance (m)')
-plt.ylabel('Distribution')
-plt.title('Histogram of UWB Test Data (Outdoor, LOS, distance = 8 m)')
+plt.ylabel('PDF')
+plt.title('Histogram of UWB Test Data (Outdoor, LOS, distance = 8 m)\n Sample number = 3439')
 
-plt.axis([8.0, 8.7, 0, 400])
+plt.axis([8.0, 8.7, 0, 0.1])
 plt.grid(True)
 plt.show()
 
 data_4 = data_import[9130:12000][1]
 # the histogram of the data_1 (distance = 12 m)
 plt.figure()
-data_4.hist(bins=100)
-
+weights = np.ones_like(data_4)/float(len(data_4))
+plt.hist(data_4, 50, weights=weights, facecolor='green', alpha=0.5)
 
 plt.xlabel('Distance (m)')
-plt.ylabel('Distribution')
-plt.title('Histogram of UWB Test Data (Outdoor, LOS,  distance = 12 m)')
+plt.ylabel('PDF')
+plt.title('Histogram of UWB Test Data (Outdoor, LOS,  distance = 12 m)\n Sample number = 2870')
 
-plt.axis([12.0,12.6, 0, 200])
+plt.axis([12.0,12.6, 0, 0.1])
 plt.grid(True)
 plt.show()
 
 data_5 = data_import[12766:14348][1]
-# the histogram of the data_1 (distance = 8 m)
+# the histogram of the data_1 (distance = 14 m)
 plt.figure()
-data_5.hist(bins=100)
-
+weights = np.ones_like(data_5)/float(len(data_5))
+plt.hist(data_5, 50, weights=weights, facecolor='green', alpha=0.5)
 
 plt.xlabel('Distance (m)')
-plt.ylabel('Distribution')
-plt.title('Histogram of UWB Test Data (Outdoor, LOS, distance = 14 m)')
+plt.ylabel('PDF')
+plt.title('Histogram of UWB Test Data (Outdoor, LOS, distance = 14 m)\n Sample number = 1582')
 
-plt.axis([14.0, 14.7, 0, 250])
+plt.axis([14.0, 14.7, 0, 0.14])
 plt.grid(True)
 plt.show()
 
