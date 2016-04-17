@@ -51,7 +51,7 @@ def get_simple_ranges(filename = 'staticTagLong.txt'):
         if thisSeq != lastSeq:  #if we have moved on to a new sequence, calculate the last one
             dists = []
             for anc in sequence[lastSeq]:
-                dists.append((anc['anchor'],anc['meters']))
+                dists.append(anc['meters'])
             simpleDists.append(dists)
             lastSeq = thisSeq
             if thisSeq == 0: #when the seqNum overflows, clear the sequence buffer
