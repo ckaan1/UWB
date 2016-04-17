@@ -52,18 +52,20 @@ def heatmap(locations, pLocations,xSize,ySize,xl,yl):
 
     y, x = np.meshgrid(yl,xl)    
     
-    plt.pcolor(x,y,errorMap,cmap='RdBu',vmin=0,vmax=1)
-    plt.axis([0,5,0,8])
+    plt.pcolor(x,y,errorMap,cmap='bwr',vmin=0,vmax=0.75)
+    plt.axis([0,10,0,10])
     plt.xlabel("X position (m)")
     plt.ylabel("Y position (m)")
-    plt.title("Position Error (m)")
+    plt.title("Simulated Weighted Least Squares Estimator")
     
     # plt.imshow(errorMap, cmap=cm.RdBu, vmax=abs(errorMap).max(), vmin=0,
     #            extent = [xmin,xmax,ymin,ymax],interpolation='bilinear')
     #im.set_interpolation('nearest')
     #im.set_interpolation('bicubic')
     #im.set_interpolation('bilinear')
-    plt.colorbar()
+    cbar = plt.colorbar()
+    cbar.ax.set_ylabel("Position Error (m)")
+
     #ax.set_image_extent(-3, 3, -3, 3)
 
     plt.show()

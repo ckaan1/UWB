@@ -7,22 +7,25 @@
 import numpy as np
 import scipy.optimize as optimize
 import math
-  
+
+weights = []
 # NLLS function
-def func_1(x,p_FA,d_M) :
+def func_1(x,p_FA,d_M,rssi_EX) :
 
     num = len(p_FA)  # num - number of fixed anchors
     cost = cost = [0.]*num
     for i in range(0,num):
-
-        cost[i] = d_M[i] - np.linalg.norm(x-p_FA[i,0:2])
+        weight = max( min( 1,(1-(abs(d_M[i][1]-rssi_EX[i])/5)) ), 0.1 )
+        cost[i] = weight*(d_M[i][0] - np.linalg.norm(x-p_FA[i,0:2]))
+        # cost[i] = (d_M[i][0] - np.linalg.norm(x-p_FA[i,0:2]))
 
     return cost   
 
 # NLLS optimization  
-def NLLS_opt(x_guess,p_FA,d_M):   
+def NLLS_opt(x_guess,p_FA,d_M,rssi_EX):   
     
-    x = optimize.leastsq(func_1,x_guess,args=(p_FA,d_M))
+    x = optimize.leastsq(func_1,x_guess,args=(p_FA,d_M,rssi_EX))
+    # print min(weights)
 
     return x[0]
         
