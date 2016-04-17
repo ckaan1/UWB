@@ -68,6 +68,7 @@ def heatmap(locations, pLocations,xSize,ySize,xl,yl):
 
     plt.show()
     return errorMap
+    rangesToUseInLocalization = get_simple_ranges('staticTagLong.txt')
 
 
 
