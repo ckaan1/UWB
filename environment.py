@@ -119,7 +119,10 @@ class Environment:
             ol3 = self.obstacles[o]['x'][1]
             ol4 = self.obstacles[o]['y'][1]
 
-            p = ptc.Rectangle((ol1,ol2),ol3-ol1,ol4-ol2,edgecolor="#00ff00",facecolor='#00ff00')
+            if( self.obstacles[o]['dc'] == 52.7 ):
+                p = ptc.Rectangle((ol1,ol2),ol3-ol1,ol4-ol2,edgecolor="#ffd500",facecolor='#ffd500')
+            else:    
+                p = ptc.Rectangle((ol1,ol2),ol3-ol1,ol4-ol2,edgecolor="#00ff00",facecolor='#00ff00')
             ax1.add_patch(p)
 
 

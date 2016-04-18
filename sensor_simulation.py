@@ -18,7 +18,7 @@ def estimated_distance(ap,bp,obstacles,c):
 
 			# obstacle_time = obstacle_time + obstacle_distance/(c*(1/((obstacles[o][len(obstacles[o])-1])**0.5)))
 
-	return total_distance+d_plus+np.random.normal(0,0.025)
+	return total_distance+d_plus+np.random.normal(0,0.005625)
 
 def estimated_rssi(ap,bp,obstacles):
 	total_distance = ((ap['x']-bp['x'])**2+(ap['y']-bp['y'])**2)**0.5
@@ -34,7 +34,7 @@ def estimated_rssi(ap,bp,obstacles):
 					rssi_drop = rssi_drop + obstacle_distance*14.5827
 				elif dc == 52.7:
 					rssi_drop = rssi_drop + obstacle_distance*63.3707
-	return -2.5134*total_distance-66.6-rssi_drop
+	return -2.5134*total_distance-66.6-rssi_drop+np.random.normal(0,0.64)
 
 
 

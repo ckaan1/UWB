@@ -34,6 +34,7 @@ def fakeLocations(xSize=5,ySize=5,stepSize = .05):
 def heatmap(locations, pLocations,xSize,ySize,xl,yl,plot_title):
     errorMap = np.zeros((xSize,ySize))
     locDifferences = []
+    average_error = 0
     xyz = zip(*locations)
     xmin = map(min,xyz)[0]
     ymin = map(min,xyz)[1]
@@ -48,6 +49,7 @@ def heatmap(locations, pLocations,xSize,ySize,xl,yl,plot_title):
         for y in range(ySize):
             errMagnitude = sqrt((locDifferences[i][0])**2 + (locDifferences[i][1])**2)
             errorMap[x,y] = errMagnitude
+            average_error = average_error + errMagnitude
             i += 1
 
     y, x = np.meshgrid(yl,xl)    
@@ -69,6 +71,9 @@ def heatmap(locations, pLocations,xSize,ySize,xl,yl,plot_title):
     #ax.set_image_extent(-3, 3, -3, 3)
 
     plt.show()
+
+    print "Average Error for", plot_title, ": ", average_error/(xSize*ySize)
+
     return errorMap
     rangesToUseInLocalization = get_simple_ranges('staticTagLong.txt')
 
