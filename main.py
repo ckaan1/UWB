@@ -20,8 +20,6 @@ if __name__ == "__main__":
 	print "Boundaries\n", env.boundaries
 	print "Obstacles\n", env.obstacles
 
-	env.draw_obstacles()
-
 	# Setup Anchor locations
 	anchors = []
 	anchors.append(AnchorNode(0.3048,0.3048,0,0.025))
@@ -38,7 +36,7 @@ if __name__ == "__main__":
 	lower_x = env.boundaries['x'][0]
 	upper_y = env.boundaries['y'][1]
 	lower_y = env.boundaries['y'][0]
-	length = 100
+	length = 200
 
 	# Build linspace for x and y positions
 	beacon_positions_x = np.linspace(lower_x,upper_x,length)
@@ -90,9 +88,36 @@ if __name__ == "__main__":
 	# plt.show()
 
 	# Use position solver on the estimated distances
-	estimated_pos = np.zeros((len(beacon_positions),3))
+	weighted_estimated_pos = np.zeros((len(beacon_positions),3))
+	unweighted_estimated_pos = np.zeros((len(beacon_positions),3))
 	# Use middle of room for guess
 	x_guess = np.array([5,5])
+
+	all_weights = np.zeros((len(distances),len(anchors)))
+	for i in range(len(distances)):
+
+		a_pos = np.zeros((len(anchors),2))
+		for j in range(len(anchors)):
+			pos = anchors[j].get_pos()
+			a_pos[j] = [pos['x'],pos['y']]
+
+		d = distances[i]
+		a_d = np.array(d)
+
+		if sum(d)==0:
+			weighted_estimated_pos[i] = beacon_positions[i]
+		else:
+			## Use a solver to provide estimated position
+			## NLLS solver
+			weights = []
+			for j in range(0,len(anchors)):
+				expected_rssi = get_expected_rssi(a_d[j,0])
+				weights.append(max( min( 1,(1-(abs(a_d[j,1]-expected_rssi)/5)) ), 0.1 ))
+			all_weights[i,:] = weights
+			p_estimate = NLLS_opt(x_guess,a_pos,a_d[:,0],weights)
+			## ML solver
+			# p_estimate = ML_opt(x_guess,a_pos,a_d)
+			weighted_estimated_pos[i] = [p_estimate[0],p_estimate[1],0]
 
 	for i in range(len(distances)):
 
@@ -105,21 +130,48 @@ if __name__ == "__main__":
 		a_d = np.array(d)
 
 		if sum(d)==0:
-			estimated_pos[i] = beacon_positions[i]
+			unweighted_estimated_pos[i] = beacon_positions[i]
 		else:
 			## Use a solver to provide estimated position
 			## NLLS solver
-			expected_rssi =[]
+			weights = []
 			for j in range(0,len(anchors)):
-				expected_rssi.append(get_expected_rssi(a_d[j,0]))
-			p_estimate = NLLS_opt(x_guess,a_pos,a_d,expected_rssi)
+				weights.append(1)
+			p_estimate = NLLS_opt(x_guess,a_pos,a_d[:,0],weights)
 			## ML solver
 			# p_estimate = ML_opt(x_guess,a_pos,a_d)
-			estimated_pos[i] = [p_estimate[0],p_estimate[1],0]
+			unweighted_estimated_pos[i] = [p_estimate[0],p_estimate[1],0]
 
-	heatmap(beacon_positions,estimated_pos,length,length,beacon_positions_x,beacon_positions_y)
 
-	
+	plt.figure(1)
+	for i in range(len(anchors)):
+		ap = anchors[i].get_pos()
+		fig = plt.figure(1)
+		ax1 = fig.add_subplot(111,aspect='equal')
+		p = ptc.Circle((ap['x'],ap['y']),radius=0.2,edgecolor="#ff8000",facecolor='#ff8000')
+		ax1.add_patch(p)
+	env.draw_obstacles(1)
+	heatmap(beacon_positions,weighted_estimated_pos,length,length,beacon_positions_x,beacon_positions_y,'Simulated Weighted Least Squares Estimator')
+
+	plt.figure(2)
+	env.draw_obstacles(2)
+	for i in range(len(anchors)):
+		ap = anchors[i].get_pos()
+		fig = plt.figure(2)
+		ax1 = fig.add_subplot(111,aspect='equal')
+		p = ptc.Circle((ap['x'],ap['y']),radius=0.2,edgecolor="#ff8000",facecolor='#ff8000')
+		ax1.add_patch(p)
+	heatmap(beacon_positions,unweighted_estimated_pos,length,length,beacon_positions_x,beacon_positions_y,'Simulated Unweighted Least Squares Estimator')
+
+	for i in range(3,len(anchors)+3):
+		plt.figure(i)
+		env.draw_obstacles(i)
+		ap = anchors[i-3].get_pos()
+		fig = plt.figure(i)
+		ax1 = fig.add_subplot(111,aspect='equal')
+		p = ptc.Circle((ap['x'],ap['y']),radius=0.2,edgecolor="#ff8000",facecolor='#ff8000')
+		ax1.add_patch(p)
+		heat_weights(beacon_positions,all_weights[:,i-3],length,length,beacon_positions_x,beacon_positions_y)
 
 	raw_input("Press enter to exit...")
  

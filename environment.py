@@ -110,17 +110,17 @@ class Environment:
                 return True
         return False
 
-	def draw_obstacles(self):
-		fig = plt.figure()
-		ax1 = fig.add_subplot(111,aspect='equal')
-		for o in self.obstacles:
-			ol1 = self.obstacles[o]['x'][0]
-			ol2 = self.obstacles[o]['y'][0]
-			ol3 = self.obstacles[o]['x'][1]
-			ol4 = self.obstacles[o]['y'][1]
+    def draw_obstacles(self,figure_number):
+        fig = plt.figure(figure_number)
+        ax1 = fig.add_subplot(111,aspect='equal')
+        for o in self.obstacles:
+            ol1 = self.obstacles[o]['x'][0]
+            ol2 = self.obstacles[o]['y'][0]
+            ol3 = self.obstacles[o]['x'][1]
+            ol4 = self.obstacles[o]['y'][1]
 
-			p = ptc.Rectangle((ol1,ol2),ol3-ol1,ol4-ol2,edgecolor="#00ff00",facecolor='#00ff00')
-			ax1.add_patch(p)
+            p = ptc.Rectangle((ol1,ol2),ol3-ol1,ol4-ol2,edgecolor="#00ff00",facecolor='#00ff00')
+            ax1.add_patch(p)
 
 
 
