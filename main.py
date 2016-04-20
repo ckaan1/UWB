@@ -16,7 +16,7 @@ import matplotlib.pyplot as plt
 if __name__ == "__main__":
 
 	# Setup Environment and display boundaries and obstacles
-	env = Environment(2)
+	env = Environment(4)
 	print "Boundaries\n", env.boundaries
 	print "Obstacles\n", env.obstacles
 
@@ -172,6 +172,135 @@ if __name__ == "__main__":
 		p = ptc.Circle((ap['x'],ap['y']),radius=0.2,edgecolor="#ff8000",facecolor='#ff8000')
 		ax1.add_patch(p)
 		heat_weights(beacon_positions,all_weights[:,i-3],length,length,beacon_positions_x,beacon_positions_y)
+
+	## Create a path to "follow"
+	waypoints = [[2,2,0],[2.5,2,0],[2.5,5,0],[3,5,0],[3,7,0],[9,7,0],[9,1,0],[6.5,1,0],[6.5,1.5,0]]
+	path_points = []
+
+	step = .05
+	j = 0
+	path_points.append(waypoints[0])
+	for i in range(0,len(waypoints)-1):
+		while (path_points[j][0]!=waypoints[i+1][0]) or (path_points[j][1]!=waypoints[i+1][1]):
+			new_x = 0
+			new_y = 0
+			if( abs(waypoints[i+1][0]-path_points[j][0])>step ):
+				if( path_points[j][0]>waypoints[i+1][0] ):
+					new_x = path_points[j][0]-step
+				else:
+					new_x = path_points[j][0]+step
+			else:
+				new_x = waypoints[i+1][0]
+			if( abs(waypoints[i+1][1]-path_points[j][1])>step ):
+				if( path_points[j][1]>waypoints[i+1][1] ):
+					new_y = path_points[j][1]-step
+				else:
+					new_y = path_points[j][1]+step
+			else:
+				new_y = waypoints[i+1][1]
+			path_points.append([new_x,new_y,0])
+			j = j + 1
+
+	path_distances = []
+	# For each beacon position run the algorithm to obtain an estimated position
+	for b_pos in path_points:
+		path_distance = []
+		# If the point is in an obstacle, return zeros
+		if env.in_obstacle(b_pos):
+			for a in anchors:
+				path_distance.append(0)
+		else:
+			beacon.move_pos(b_pos[0],b_pos[1],b_pos[2])
+			bp = beacon.get_pos()
+			for a in anchors:
+				ap = a.get_pos()
+				collision = env.determine_NLOS([ap['x'],ap['y']],[bp['x'],bp['y']])
+
+				path_distance.append(get_distance(a,bp,collision))
+		path_distances.append(path_distance)
+
+	print len(path_points)
+
+	weighted_estimated_pos = np.zeros((len(path_points),3))
+	unweighted_estimated_pos = np.zeros((len(path_points),3))
+	# Use middle of room for guess
+	x_guess = np.array([5,5])
+
+	all_weights = np.zeros((len(path_distances),len(anchors)))
+	for i in range(len(path_distances)):
+
+		a_pos = np.zeros((len(anchors),2))
+		for j in range(len(anchors)):
+			pos = anchors[j].get_pos()
+			a_pos[j] = [pos['x'],pos['y']]
+
+		d = path_distances[i]
+		a_d = np.array(d)
+
+		if sum(d)==0:
+			weighted_estimated_pos[i] = path_points[i]
+		else:
+			## Use a solver to provide estimated position
+			## NLLS solver
+			weights = []
+			for j in range(0,len(anchors)):
+				expected_rssi = get_expected_rssi(a_d[j,0])
+				weights.append(max( min( 1,(1-(abs(a_d[j,1]-expected_rssi)/5)) ), 0.1 ))
+			all_weights[i,:] = weights
+			p_estimate = NLLS_opt(x_guess,a_pos,a_d[:,0],weights)
+			## ML solver
+			# p_estimate = ML_opt(x_guess,a_pos,a_d)
+			weighted_estimated_pos[i] = [p_estimate[0],p_estimate[1],0]
+
+	for i in range(len(path_distances)):
+
+		a_pos = np.zeros((len(anchors),2))
+		for j in range(len(anchors)):
+			pos = anchors[j].get_pos()
+			a_pos[j] = [pos['x'],pos['y']]
+
+		d = path_distances[i]
+		a_d = np.array(d)
+
+		if sum(d)==0:
+			unweighted_estimated_pos[i] = path_points[i]
+		else:
+			## Use a solver to provide estimated position
+			## NLLS solver
+			weights = []
+			for j in range(0,len(anchors)):
+				weights.append(1)
+			p_estimate = NLLS_opt(x_guess,a_pos,a_d[:,0],weights)
+			## ML solver
+			# p_estimate = ML_opt(x_guess,a_pos,a_d)
+			unweighted_estimated_pos[i] = [p_estimate[0],p_estimate[1],0]
+
+
+	plt.figure(1)
+	for i in range(len(anchors)):
+		ap = anchors[i].get_pos()
+		fig = plt.figure(1)
+		ax1 = fig.add_subplot(111,aspect='equal')
+		p = ptc.Circle((ap['x'],ap['y']),radius=0.2,edgecolor="#ff8000",facecolor='#ff8000')
+		ax1.add_patch(p)
+	env.draw_obstacles(1)
+	plt.xlabel("X position (m)")
+	plt.ylabel("Y position (m)")
+	plt.title("Actual Path versus Estimated Path with Weighting")
+	scatter_path(np.array(path_points),weighted_estimated_pos)
+
+	plt.figure(2)
+	for i in range(len(anchors)):
+		ap = anchors[i].get_pos()
+		fig = plt.figure(2)
+		ax1 = fig.add_subplot(111,aspect='equal')
+		p = ptc.Circle((ap['x'],ap['y']),radius=0.2,edgecolor="#ff8000",facecolor='#ff8000')
+		ax1.add_patch(p)
+	env.draw_obstacles(2)
+	plt.xlabel("X position (m)")
+	plt.ylabel("Y position (m)")
+	plt.title("Actual Path versus Estimated Path without Weighting")
+	scatter_path(np.array(path_points),unweighted_estimated_pos)
 
 	raw_input("Press enter to exit...")
  

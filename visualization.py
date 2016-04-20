@@ -106,6 +106,17 @@ def heat_weights(locations, weights, xSize, ySize, xl, yl):
     plt.show()
 
 
+def scatter_path(actual_locations, estimated_locations):
+    plt.scatter(actual_locations[:,0],actual_locations[:,1])
+    plt.scatter(estimated_locations[:,0],estimated_locations[:,1],c='r')
+    plt.axis([0,10,0,10])
+    plt.show()
+
+    error = 0
+    for x in range(len(actual_locations)):
+        error = error + ((actual_locations[x,0]-estimated_locations[x,0])**2 + (actual_locations[x,1]-estimated_locations[x,1])**2)**0.5
+
+    print "Average Estimated error: ", error/len(actual_locations)
 
 
 

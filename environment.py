@@ -19,6 +19,8 @@ class Environment:
             self.boundaries = {'x':[0, 10],'y':[0, 10]}
         elif environment_number == 3:
             self.boundaries = {'x':[0, 6],'y':[0, 7]}
+        elif environment_number == 4:
+        	self.boundaries = {'x':[0,10],'y':[0,10]}
         
         self.obstacles = get_obstacles( environment_number )
 
@@ -162,6 +164,39 @@ def get_obstacles( environment_number ):
 		obstacles[15] = {'x':[6,6.2],'y':[2,2.4],'dc':52.7}
 		obstacles[16] = {'x':[7,7.2],'y':[2,2.4],'dc':52.7}
 		obstacles[17] = {'x':[6.3,6.7],'y':[3,3.2],'dc':52.7}
+		return obstacles
+	elif environment_number==4:
+		obstacles = {}
+		obstacles[0] = {'x':[4,4.00635],'y':[0,4],'dc':2.44}
+		obstacles[1] = {'x':[4.00635,4.01905],'y':[0,4],'dc':2.49}
+		obstacles[2] = {'x':[4.01905,4.0254],'y':[0,4],'dc':2.44}
+		obstacles[3] = {'x':[0,2],'y':[4,4.00635],'dc':2.44}
+		obstacles[4] = {'x':[0,2],'y':[4.00635,4.01905],'dc':2.49}
+		obstacles[5] = {'x':[0,2],'y':[4.01905,4.0254],'dc':2.44}  
+		obstacles[6] = {'x':[3,4.0254],'y':[4,4.00635],'dc':2.44}
+		obstacles[7] = {'x':[3,4.0254],'y':[4.00635,4.01905],'dc':2.49}
+		obstacles[8] = {'x':[3,4.0254],'y':[4.01905,4.0254],'dc':2.44}  
+		obstacles[9] = {'x':[0,2],'y':[6,6.00635],'dc':2.44}
+		obstacles[10] = {'x':[0,2],'y':[6.00635,6.01905],'dc':2.49}
+		obstacles[11] = {'x':[0,2],'y':[6.01905,6.0254],'dc':2.44}  
+		obstacles[12] = {'x':[5,5.00635],'y':[8,10],'dc':2.44}
+		obstacles[13] = {'x':[5.00635,5.01905],'y':[8,10],'dc':2.49}
+		obstacles[14] = {'x':[5.01905,5.0254],'y':[8,10],'dc':2.44}
+		obstacles[15] = {'x':[6,6.2],'y':[2,2.4],'dc':52.7}
+		obstacles[16] = {'x':[7,7.2],'y':[2,2.4],'dc':52.7}
+		obstacles[17] = {'x':[6.3,6.7],'y':[3,3.2],'dc':52.7}
+		obstacles[18] = {'x':[4,4.00635],'y':[5,6],'dc':2.44}
+		obstacles[19] = {'x':[4.00635,4.01905],'y':[5,6],'dc':2.49}
+		obstacles[20] = {'x':[4.01905,4.0254],'y':[5,6],'dc':2.44}
+		obstacles[21] = {'x':[8,8.00635],'y':[5,6],'dc':2.44}
+		obstacles[22] = {'x':[8.00635,8.01905],'y':[5,6],'dc':2.49}
+		obstacles[23] = {'x':[8.01905,8.0254],'y':[5,6],'dc':2.44}
+		obstacles[24] = {'x':[4.0254,8],'y':[5,5.00635],'dc':2.44}
+		obstacles[25] = {'x':[4.0254,8],'y':[5.00635,5.01905],'dc':2.49}
+		obstacles[26] = {'x':[4.0254,8],'y':[5.01905,5.0254],'dc':2.44}
+		obstacles[27] = {'x':[4,8.0254],'y':[6,6.00635],'dc':2.44}
+		obstacles[28] = {'x':[4,8.0254],'y':[6.00635,6.01905],'dc':2.49}
+		obstacles[29] = {'x':[4,8.0254],'y':[6.01905,6.0254],'dc':2.44}
 		return obstacles
 	else:
 		obstacles = {}
