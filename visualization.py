@@ -70,8 +70,6 @@ def heatmap(locations, pLocations,xSize,ySize,xl,yl,plot_title):
 
     #ax.set_image_extent(-3, 3, -3, 3)
 
-    plt.show()
-
     print "Average Error for", plot_title, ": ", average_error/(xSize*ySize)
 
     return errorMap
@@ -103,14 +101,12 @@ def heat_weights(locations, weights, xSize, ySize, xl, yl):
 
     #ax.set_image_extent(-3, 3, -3, 3)
 
-    plt.show()
 
 
 def scatter_path(actual_locations, estimated_locations):
     plt.scatter(actual_locations[:,0],actual_locations[:,1])
     plt.scatter(estimated_locations[:,0],estimated_locations[:,1],c='r')
     plt.axis([0,10,0,10])
-    plt.show()
 
     error = 0
     for x in range(len(actual_locations)):

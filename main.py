@@ -28,6 +28,20 @@ if __name__ == "__main__":
 	anchors.append(AnchorNode(9.6592,9.6592,0,0.025))
 	#anchors.append(AnchorNode(2.5,4,0,0.025))
 
+	plt.figure(1)
+	for i in range(len(anchors)):
+		ap = anchors[i].get_pos()
+		fig = plt.figure(1)
+		ax1 = fig.add_subplot(111,aspect='equal')
+		p = ptc.Circle((ap['x'],ap['y']),radius=0.2,edgecolor="#ff8000",facecolor='#ff8000')
+		ax1.add_patch(p)
+	env.draw_obstacles(1)
+	plt.xlabel("X position (m)")
+	plt.ylabel("Y position (m)")
+	plt.title("Example World")
+	plt.axis([0,10,0,10])
+	plt.show()
+
 	# Initialize beacon with starting location
 	beacon = BeaconNode(0.5,0.5,0)
 
@@ -64,6 +78,8 @@ if __name__ == "__main__":
 
 				distance.append(get_distance(a,bp,collision))
 		distances.append(distance)
+
+
 
 	# errorMap = np.zeros((length,length))
 	# i = 0
@@ -141,6 +157,7 @@ if __name__ == "__main__":
 			## ML solver
 			# p_estimate = ML_opt(x_guess,a_pos,a_d)
 			unweighted_estimated_pos[i] = [p_estimate[0],p_estimate[1],0]
+
 
 
 	plt.figure(1)
@@ -301,6 +318,8 @@ if __name__ == "__main__":
 	plt.ylabel("Y position (m)")
 	plt.title("Actual Path versus Estimated Path without Weighting")
 	scatter_path(np.array(path_points),unweighted_estimated_pos)
+
+	plt.show()
 
 	raw_input("Press enter to exit...")
  
